@@ -1,0 +1,19 @@
+      - name: Find and build Android project
+        shell: bash
+        run: |
+          GRADLEW=$(find buildsrc -type f -name gradlew -print -quit)
+
+          if [ -z "$GRADLEW" ]; then
+            echo "ERROR: gradlew not found inside buildsrc"
+            echo "Files found:"
+            find buildsrc -maxdepth 4 -type f | head -100
+            exit 1
+          fi
+
+          PROJECT_DIR=$(dirname "$GRADLEW")
+          echo "Project: $PROJECT_DIR"
+
+          chmod +x "$PROJECT_DIR/gradlew"
+          cd "$PROJECT_DIR"
+
+          ./gradlew bundleRelease --no-daemon
